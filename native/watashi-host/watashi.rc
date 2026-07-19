@@ -1,0 +1,31 @@
+// Watashi Windows resource — version info + manifest
+
+// RT_MANIFEST = 24
+1 24 "watashi.manifest"
+
+// VS_VERSION_INFO
+1 VERSIONINFO
+FILEVERSION    0,2,0,0
+PRODUCTVERSION 0,2,0,0
+FILEOS         0x00040004
+FILETYPE       0x00000001
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName",      "GIFTED AGENT LLC\0"
+            VALUE "FileDescription",  "Watashi \x2014 Cross-Platform Input Sharing\0"
+            VALUE "FileVersion",      "0.2.0\0"
+            VALUE "InternalName",     "watashi\0"
+            VALUE "LegalCopyright",   "Copyright 2026 GIFTED AGENT LLC\0"
+            VALUE "OriginalFilename", "watashi.exe\0"
+            VALUE "ProductName",      "Watashi\0"
+            VALUE "ProductVersion",   "0.2.0\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 0x04B0
+    END
+END

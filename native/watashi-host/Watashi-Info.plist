@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>Watashi (渡し)</string>
+	<key>CFBundleExecutable</key>
+	<string>watashi</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.etzhayyim.watashi</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Watashi</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.2.0</string>
+	<key>CFBundleVersion</key>
+	<string>0.2.0</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>12.0</string>
+	<key>LSUIElement</key>
+	<false/>
+	<key>NSAccessibilityUsageDescription</key>
+	<string>Watashi needs Accessibility access to inject mouse and keyboard events from remote devices.</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright 2026 Etzhayyim Co., Ltd.</string>
+	<key>NSInputMonitoringUsageDescription</key>
+	<string>Watashi needs Input Monitoring to capture mouse and keyboard events for cross-device sharing.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Watashi uses the local network to discover and connect to other devices via mDNS.</string>
+</dict>
+</plist>

@@ -1,0 +1,137 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        target: [aarch64-apple-darwin, x86_64-apple-darwin]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+        working-directory: native/watashi-host
+
+      - name: Create .app bundle
+        run: |
+          APP="Watashi.app"
+          mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+          cp native/watashi-host/target/${{ matrix.target }}/release/watashi "$APP/Contents/MacOS/"
+          cp native/watashi-host/Watashi-Info.plist "$APP/Contents/Info.plist"
+          codesign --force --deep --options runtime --timestamp --sign - "$APP"
+
+      - name: Create DMG
+        run: |
+          mkdir dmg-staging
+          cp -R Watashi.app dmg-staging/
+          ln -s /Applications dmg-staging/Applications
+          ARCH=$(echo "${{ matrix.target }}" | sed 's/aarch64/arm64/;s/x86_64/x64/')
+          hdiutil create -volname Watashi -srcfolder dmg-staging -ov -format UDZO \
+            "Watashi-${{ github.ref_name || '0.1.0' }}-macos-${ARCH}.dmg"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-${{ matrix.target }}
+          path: "*.dmg"
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Build
+        run: cargo build --release
+        working-directory: native/watashi-host
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name || '0.1.0' }}"
+          Compress-Archive -Path native/watashi-host/target/release/watashi.exe `
+            -DestinationPath "watashi-${version}-windows-x64.zip"
+
+      # SignPath signing (activated after OSS approval)
+      # - name: Sign with SignPath
+      #   uses: signpath/github-action-submit-signing-request@v1
+      #   with:
+      #     api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+      #     organization-id: ${{ secrets.SIGNPATH_ORG_ID }}
+      #     project-slug: watashi
+      #     signing-policy-slug: release-signing
+      #     artifact-configuration-slug: watashi-exe
+      #     github-artifact-id: windows-x64
+      #     wait-for-completion: true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          path: "*.zip"
+
+  sbom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-cyclonedx
+        run: cargo install cargo-cyclonedx
+      - name: Generate SBOM
+        run: cargo cyclonedx --format json
+        working-directory: native/watashi-host
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: native/watashi-host/*.cdx.json
+
+  release:
+    needs: [build-macos, build-windows, sbom]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
+      - name: Create checksums
+        run: sha256sum *.dmg *.zip *.cdx.json > SHA256SUMS.txt
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *.dmg
+            *.zip
+            *.cdx.json
+            SHA256SUMS.txt
+          body: |
+            ## Watashi (渡し) ${{ github.ref_name }}
+
+            Cross-platform mouse/keyboard sharing with encrypted UDP + mDNS auto-discovery.
+
+            ### Downloads
+            | Platform | File |
+            |---|---|
+            | macOS (Apple Silicon) | `Watashi-${{ github.ref_name }}-macos-arm64.dmg` |
+            | macOS (Intel) | `Watashi-${{ github.ref_name }}-macos-x64.dmg` |
+            | Windows (64-bit) | `watashi-${{ github.ref_name }}-windows-x64.zip` |
+
+            ### Quick Start
+            ```bash
+            # macOS — double-click DMG, drag to Applications, launch
+            # Windows — extract zip, run watashi.exe
+
+            # Both auto-discover peers on LAN via mDNS
+            ```

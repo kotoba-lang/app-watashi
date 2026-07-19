@@ -1,0 +1,41 @@
+{
+  "name": "kotodama-mfbtsuyc",
+  "main": "svelte/.svelte-kit/cloudflare/_worker.js",
+  "compatibility_date": "2025-03-17",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_als"
+  ],
+  "assets": {
+    "directory": "./svelte/.svelte-kit/cloudflare/client",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  },
+  "vars": {
+    "APP_ACTOR_HANDLE": "watashi",
+    "APP_CAPABILITIES": "[\"peer-discovery\",\"screen-config\",\"clipboard-relay\"]",
+    "APP_DESCRIPTION": "Cross-platform mouse/keyboard sharing — cursor ferry between screens",
+    "APP_DISPLAY_NAME": "Watashi (渡し)",
+    "APP_EMBED_URL": "https://mfbtsuyc.etzhayyim.com/?embed=1",
+    "APP_FRAMEWORK": "sveltekit-edge-bff",
+    "APP_NANOID": "mfbtsuyc",
+    "APP_PERFORMER_TYPE": "",
+    "APP_UI_TYPE": "appview",
+    "AGENTGATEWAY_MCP_ROUTER_URL": "https://mcp.etzhayyim.com/xrpc/com.etzhayyim.mcp.message"
+  },
+  "rules": [
+    {
+      "type": "CompiledWasm",
+      "globs": [
+        "**/*.wasm"
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "pattern": "mfbtsuyc.etzhayyim.com/*",
+      "zone_name": "etzhayyim.com"
+    }
+  ]
+}

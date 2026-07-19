@@ -1,0 +1,24 @@
+{
+  "@context": "https://etzhayyim.com/ns/kotodama",
+  "@id": "did:web:mfbtsuyc.etzhayyim.com",
+  "nanoid": "mfbtsuyc",
+  "name": "watashi",
+  "displayName": "Watashi (渡し) Coordinator",
+  "description": "Peer discovery, screen layout configuration, and DID authentication for cross-platform input sharing (cursor ferry between screens).",
+  "uiType": "appview",
+  "triggers": {
+    "http": {
+      "routes": ["/api/*", "/health"]
+    }
+  },
+  "profile": {
+    "displayName": "Watashi (渡し)",
+    "description": "Cross-platform mouse/keyboard sharing — cursor ferry between screens",
+    "isBot": true,
+    "capabilities": [
+      "peer-discovery",
+      "screen-config",
+      "clipboard-relay"
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "@context": "https://etzhayyim.com/ns/project",
+  "@type": "Project",
+  "@id": "did:web:watashi.etzhayyim.com",
+  "name": "watashi",
+  "displayName": "Watashi (渡し)",
+  "description": "Cross-platform mouse/keyboard sharing between macOS and Windows machines. Cursor ferry between screens. Rust native agent + WASM coordination + KAMI Engine UI.",
+  "domain": "watashi.etzhayyim.com",
+  "status": "developing",
+  "runtimeType": "native",
+  "capabilities": [
+    "input-capture",
+    "input-injection",
+    "screen-sharing",
+    "clipboard-sync",
+    "encrypted-transport"
+  ],
+  "platforms": ["macos", "windows"],
+  "dependencies": [
+    "kami-bridge",
+    "kami-knp",
+    "kami-input",
+    "kami-ui-gpu",
+    "kotodama-kami-host"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "artifactConfigurations": [
+    {
+      "name": "watashi-exe",
+      "packaging": {
+        "type": "zip",
+        "fileElements": [
+          {
+            "name": "watashi.exe",
+            "signing": {
+              "authenticode": {}
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

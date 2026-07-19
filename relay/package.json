@@ -1,0 +1,14 @@
+{
+  "name": "watashi-relay",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Minimal relay service for Watashi WSS sessions",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
+
