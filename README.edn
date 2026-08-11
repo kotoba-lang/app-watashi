@@ -1,1 +1,6 @@
-{:schema "etzhayyim.repository/readme-v1" :name "com-etzhayyim-app-watashi" :kind :application :source "etzhayyim/root/60-apps/etzhayyim-project-watashi"}
+{:schema "etzhayyim.repository/readme-v1"
+ :name "app-watashi"
+ :kind :application
+ :source "etzhayyim/root/60-apps/etzhayyim-project-watashi"
+ :boundary {:role :cross-platform-input-sharing-application
+            :runtime "kotoba-lang/app-watashi-runtime"}}
