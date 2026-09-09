@@ -1,6 +1,14 @@
 {
   "name": "etzhayyim-watashi-relay-260414",
-  "main": "svelte/.svelte-kit/cloudflare/_worker.js",
+  // "main" dropped: it pointed at the SvelteKit Cloudflare adapter's build
+  // output (svelte/.svelte-kit/cloudflare/_worker.js), which no longer
+  // exists after the Svelte → ClojureScript frontend migration (see
+  // ../cljs/). "../src/worker.ts" (the D1 + Durable Object relay backend)
+  // was considered as a replacement but does not call
+  // `env.ASSETS.fetch()`, so pointing `main` at it would put a worker in
+  // front of the static assets with nothing serving them. Frontend is
+  // served as plain static assets instead (see "assets" below). UNVERIFIED:
+  // no `wrangler deploy`/`dev` was run as part of this migration.
   "compatibility_date": "2026-04-14",
   "routes": [
     {
@@ -12,13 +20,13 @@
     "enabled": true
   },
   "assets": {
-    "directory": "./svelte/.svelte-kit/cloudflare/client",
+    "directory": "./cljs/public",
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "none"
   },
   "vars": {
-    "APP_FRAMEWORK": "sveltekit-edge-bff",
+    "APP_FRAMEWORK": "cljs-reagent-re-frame-jp-go-dds",
     "AGENTGATEWAY_MCP_ROUTER_URL": "https://mcp.etzhayyim.com/xrpc/com.etzhayyim.mcp.message"
   }
 }

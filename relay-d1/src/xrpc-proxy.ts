@@ -1,3 +1,36 @@
+// SVELTEKIT-BACKEND-PRESERVED: moved out of svelte/ during the cljs migration; not wired.
+//
+// Extracted verbatim (logic unchanged) from
+//   svelte/src/routes/xrpc/[...path]/+server.ts
+// during the Svelte -> ClojureScript frontend migration (see ../cljs/).
+//
+// This is backend/XRPC code, not frontend markup — it is a server-side route
+// handler that proxies /xrpc/<nsid> calls to AGENTGATEWAY_MCP_ROUTER_URL as an
+// MCP `tools/call` JSON-RPC request. The migration's scope was the frontend
+// (the SvelteKit page under svelte/src/routes/+page.svelte, now
+// ../cljs/src/watashi_relay/app.cljs); backend TypeScript was to be left
+// alone. It happened to live inside the now-deleted svelte/ tree, so it is
+// moved here rather than deleted. It is unrelated to `worker.ts`/`RelaySession`
+// (the actual relay Durable Object backend for this deployable) — this file
+// only ever proxied XRPC calls to the AgentGateway MCP router from inside the
+// SvelteKit-built worker.
+//
+// STATUS: not wired to anything. It cannot run as-is:
+//   - `import { json, type RequestEvent } from '@sveltejs/kit'` and
+//     `import type { RequestHandler } from './$types'` are SvelteKit-only;
+//     '@sveltejs/kit' is no longer a dependency of this repo and './$types'
+//     was a generated SvelteKit artifact that no longer exists.
+//   - Before this migration it only ran as part of the SvelteKit Cloudflare
+//     adapter's built worker (`svelte/.svelte-kit/cloudflare/_worker.js`),
+//     which `wrangler.jsonc`'s `main` pointed to. That `main` entry has been
+//     removed as part of this migration (the frontend is now served as
+//     static assets from `./cljs/public`).
+//
+// Whether to revive this AgentGateway MCP router proxy as a plain Workers
+// fetch handler is a product decision this migration does not make. It is
+// recorded here, unmodified, so the next reader does not have to
+// reconstruct it from git history.
+
 import { json, type RequestEvent } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
