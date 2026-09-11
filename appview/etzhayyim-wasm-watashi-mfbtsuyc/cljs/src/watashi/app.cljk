@@ -1,32 +1,30 @@
-(ns watashi-relay.app
-  "relay-d1 frontend — reagent + re-frame, view built from jp-go-dds
-  (デジタル庁デザインシステム) hiccup.
+(ns watashi.app
+  "etzhayyim-wasm-watashi-mfbtsuyc appview — reagent + re-frame, view built
+  from jp-go-dds (デジタル庁デザインシステム) hiccup.
 
   This is a faithful port of the previous SvelteKit scaffold
   (`svelte/src/routes/+page.svelte`): a static info page describing this
-  Cloudflare surface itself — its title/project/name/kind, its declared
-  route count and public routes, its declared runtime vars, whether xrpc is
+  appview surface itself — its title/project/name/kind, its declared route
+  count and public routes, its declared runtime vars, whether xrpc is
   configured, and the source path of the page that renders all of this. The
-  Svelte page never called the relay backend (`../src/worker.ts`) — it was
+  Svelte page never called the dispatcher Worker (`../src/app.ts`) — it was
   pure static markup describing the surface's own metadata, and this port
   adds no functionality that was not already there.
 
   The Svelte scaffold's `routeCount`/`routes`/`vars` fields were stale empty
   literals (0 / [] / []); this port corrects them from the component's
   actual `wrangler.jsonc` (`routes[].pattern` and the `vars` map keys), same
-  as the landed reference this pattern was copied from
+  as the landed reference this was copied from
   (`kotoba-lang/app-playwright`'s `etzhayyim-wasm-playwright-pl4y1t8r/cljs`).
 
-  Backend TypeScript is unaffected by this migration: `../src/worker.ts`
-  (the D1 + Durable Object relay backend), `../schema.sql`, and `../relay/`
-  are untouched. The one other TypeScript file that lived under the deleted
-  `svelte/` tree — `svelte/src/routes/xrpc/[...path]/+server.ts`, a
-  SvelteKit server route that proxied XRPC calls to
-  AGENTGATEWAY_MCP_ROUTER_URL — was backend/XRPC logic, not frontend markup,
-  so it was moved rather than deleted; see `../src/xrpc-proxy.ts` for its
-  unmodified body and a note on why it is not wired to anything right now.
-  `svelte/patch-worker.mjs`, a SvelteKit-adapter-output post-processing
-  script, is preserved the same way at `../src/svelte-build-patch-worker.mjs`."
+  Backend TypeScript is unaffected by this migration: `../src/app.ts` (the
+  documented dispatcher Worker) is untouched. The one other TypeScript file
+  that lived under the deleted `svelte/` tree —
+  `svelte/src/routes/xrpc/[...path]/+server.ts`, a SvelteKit server route
+  that proxied XRPC calls to AGENTGATEWAY_MCP_ROUTER_URL — was backend/XRPC
+  logic, not frontend markup, so it was moved rather than deleted; see
+  `../src/xrpc-proxy.ts` for its unmodified body and a note on why it is not
+  wired to anything right now."
   (:require [reagent.dom :as rdom]
             [re-frame.core :as rf]
             [jp-go-dds.core :as dds]))
@@ -42,15 +40,17 @@
 ;; and an empty vars array there).
 
 (def default-db
-  {:title "Relay D1"
+  {:title "Watashi Mfbtsuyc"
    :project "etzhayyim-project-watashi"
-   :name "relay-d1"
-   :kind "cloudflare surface"
+   :name "etzhayyim-wasm-watashi-mfbtsuyc"
+   :kind "appview"
    :route-count 1
-   :routes ["watashi-relay.etzhayyim.com/*"]
-   :vars ["AGENTGATEWAY_MCP_ROUTER_URL" "APP_FRAMEWORK"]
+   :routes ["mfbtsuyc.etzhayyim.com/*"]
+   :vars ["AGENTGATEWAY_MCP_ROUTER_URL" "APP_ACTOR_HANDLE" "APP_CAPABILITIES"
+          "APP_DESCRIPTION" "APP_DISPLAY_NAME" "APP_EMBED_URL" "APP_FRAMEWORK"
+          "APP_NANOID" "APP_PERFORMER_TYPE" "APP_UI_TYPE"]
    :xrpc? true
-   :relative-path "relay-d1/cljs/src/watashi_relay/app.cljs"})
+   :relative-path "appview/etzhayyim-wasm-watashi-mfbtsuyc/cljs/src/watashi/app.cljk"})
 
 (rf/reg-event-db
  :initialize-db

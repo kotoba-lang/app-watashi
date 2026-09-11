@@ -19,7 +19,7 @@
     (is (= ["watashi-relay.etzhayyim.com/*"] @(rf/subscribe [:routes])))
     (is (= 2 (count @(rf/subscribe [:vars]))))
     (is (true? @(rf/subscribe [:xrpc?])))
-    (is (= "relay-d1/cljs/src/watashi_relay/app.cljs"
+    (is (= "relay-d1/cljs/src/watashi_relay/app.cljk"
            @(rf/subscribe [:relative-path])))))
 
 (deftest vars-sub-carries-every-declared-wrangler-var

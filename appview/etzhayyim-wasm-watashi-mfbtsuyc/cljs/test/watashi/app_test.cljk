@@ -19,7 +19,7 @@
     (is (= ["mfbtsuyc.etzhayyim.com/*"] @(rf/subscribe [:routes])))
     (is (= 10 (count @(rf/subscribe [:vars]))))
     (is (true? @(rf/subscribe [:xrpc?])))
-    (is (= "appview/etzhayyim-wasm-watashi-mfbtsuyc/cljs/src/watashi/app.cljs"
+    (is (= "appview/etzhayyim-wasm-watashi-mfbtsuyc/cljs/src/watashi/app.cljk"
            @(rf/subscribe [:relative-path])))))
 
 (deftest vars-sub-carries-every-declared-wrangler-var
