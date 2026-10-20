@@ -1,0 +1,19 @@
+;; app-watashi — itonami（dapp）の aiueos アプリ記述子（notes.edn 形）。
+;; 判定コアは aiueos/watashi_release.cljk（release / audit の閉じた集合判定）。
+;; 正本は kotoba/src/registry.ts + types.ts。pure（:effects #{}）。
+;; audit log は E2E 暗号封筒の中（inner-type）。
+{:aiueos/component :app/watashi-release
+ :aiueos/kind :app
+ :aiueos/trust :untrusted
+ :aiueos/source "watashi_release.cljk"
+ :aiueos/wasm "watashi_release.wasm"
+ :aiueos/entry "main"
+ :aiueos/args []
+ :aiueos/imports #{}
+ :aiueos/exports #{:app/main
+                   :app/platform-ok
+                   :app/audit-action-ok
+                   :app/release-admission
+                   :app/dedup-take}
+ :aiueos/effects #{}
+ :aiueos/limits {:memory-pages 16 :fuel 5000000}}
