@@ -1,0 +1,71 @@
+(ns watashi.release
+  "watashi 判定コア — itonami dapp bundle（pure, :effects #{}）。
+
+  渡し（画面境界を越える入力共有）の release と監査の判定（正本:
+  kotoba/src/registry.ts + types.ts）:
+
+  - **platform は閉じた集合**: macos-arm64 / macos-x64 / windows-x64 /
+    linux-x64 の 4 つ。
+  - **audit action は閉じた集合**: connect / disconnect / clipboard_read /
+    file_send / screen_capture / config_change の 6 つ（clipboard_read /
+    file_send / screen_capture は機微な入力を伴う — 集合外を記録しない）。
+  - release 発行は releaseId / version / blobKey / sha256 の 4 つ必須、
+    sizeBytes は非負整数。同一 releaseId は alreadyExists（冪等）。
+  - audit log は E2E の暗号封筒の中（inner-type）—— 監査の形もこの閉じた
+    集合に固定する。
+
+  platform-ok: 1 = 0..3 の内
+  audit-action-ok: 1 = 0..5 の内
+  release-admission の戻り: 0 = 発行可 / 1 = missingRequiredFields
+    / 2 = invalidPlatform / 3 = invalidSizeBytes
+  dedup-take: 1 = alreadyExists / 0 = 新規
+
+  実行 host はスカラーのみ = KIR v3 / i64/direct ABI（kernel/selfhost 両対応）。
+
+  テストはゼロ引数 test-*、戻り 1/0:
+  <amu> test aiueos/watashi_release.cljk"
+  (:export [main platform-ok audit-action-ok release-admission dedup-take
+            test-platform test-action test-admission test-missing
+            test-dedup test-fail-closed]))
+
+(defn main [] :i64
+  0)
+
+(defn platform-ok [code :i64] :i64
+  (if (and (>= code 0) (<= code 3)) 1 0))
+
+(defn audit-action-ok [code :i64] :i64
+  (if (and (>= code 0) (<= code 5)) 1 0))
+
+(defn release-admission [has-required :i64 platform-code :i64 size-uint :i64] :i64
+  (if (= has-required 0)
+    1
+    (if (= (platform-ok platform-code) 0)
+      2
+      (if (= size-uint 1) 0 3))))
+
+(defn dedup-take [same-release :i64 has-existing :i64] :i64
+  (if (and (= same-release 1) (= has-existing 1)) 1 0))
+
+;; --- tests（戻り 1 = pass） ------------------------------------------------
+
+(defn test-platform [] :i64
+  ;; macos-arm64 / macos-x64 / windows-x64 / linux-x64 の 4 つ
+  (if (= (+ (platform-ok 0) (platform-ok 3) (platform-ok 4) (platform-ok -1)) 2) 1 0))
+
+(defn test-action [] :i64
+  ;; 6 つの閉じた集合（機微な入力を伴う action を含む）
+  (if (= (+ (audit-action-ok 0) (audit-action-ok 5) (audit-action-ok 6)) 2) 1 0))
+
+(defn test-admission [] :i64
+  (if (= (release-admission 1 2 1) 0) 1 0))
+
+(defn test-missing [] :i64
+  (if (= (+ (release-admission 0 2 1) (release-admission 1 9 1) (release-admission 1 2 0)) 6) 1 0))
+
+(defn test-dedup [] :i64
+  (if (= (+ (dedup-take 1 1) (dedup-take 1 0) (dedup-take 0 1)) 1) 1 0))
+
+(defn test-fail-closed [] :i64
+  ;; 集合外の action / platform は既定を作らない
+  (if (= (+ (audit-action-ok -1) (platform-ok 7)) 0) 1 0))

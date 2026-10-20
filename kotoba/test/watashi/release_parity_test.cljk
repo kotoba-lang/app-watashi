@@ -1,0 +1,27 @@
+(ns watashi.release-parity-test
+  "aiueos/watashi_release.cljk（判定コア）と正本（registry.ts / types.ts）の
+  parity。platform / audit action の閉じた集合と拒否名が変われば落ちる。"
+  (:require [clojure.test :refer [deftest is testing]]
+            [clojure.string :as str]
+            ["fs" :as fs]))
+
+(def types-src
+  (fs/readFileSync (str/join "/" ["kotoba" "src" "types.ts"]) "utf8"))
+(def registry
+  (fs/readFileSync (str/join "/" ["kotoba" "src" "registry.ts"]) "utf8"))
+
+(deftest closed-sets-match-guest
+  (testing "guest test-platform: RELEASE_PLATFORMS の 4 つ"
+    (doseq [p ["macos-arm64" "macos-x64" "windows-x64" "linux-x64"]]
+      (is (str/includes? types-src p))))
+  (testing "guest test-action: AUDIT_ACTIONS の 6 つ（機微な入力を含む）"
+    (doseq [a ["connect" "disconnect" "clipboard_read" "file_send" "screen_capture" "config_change"]]
+      (is (str/includes? types-src a)))))
+
+(deftest admission-rules-match-guest
+  (testing "guest test-missing / test-admission: 拒否名と必須 4 つ"
+    (is (str/includes? registry "missingRequiredFields"))
+    (is (str/includes? registry "invalidPlatform"))
+    (is (str/includes? registry "invalidSizeBytes")))
+  (testing "guest test-dedup: 同一 releaseId は alreadyExists"
+    (is (str/includes? registry "alreadyExists"))))
